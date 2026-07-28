@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Account — ToolLab{% endblock %}
+{% block content %}
+<section style="max-width:500px;margin:40px auto">
+  <h1>Account Settings</h1>
+  <div class="card mt-24">
+    <h3>Profile</h3>
+    <p class="text-dim mt-16">Email: <strong>{{ user.email }}</strong></p>
+  </div>
+  <div class="card mt-24">
+    <h3>API Key (BYOK)</h3>
+    <p class="text-dim">Your OpenAI API key is used for AI features (PDF summarize, TTS, STT). We never store it on disk — session-only.</p>
+    <form method="post" action="/auth/settings" class="mt-16">
+      <label for="openai_key">OpenAI API Key</label>
+      <input type="password" name="openai_key" id="openai_key" placeholder="sk-..." style="max-width:400px">
+      <button type="submit" class="btn mt-16">Save</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

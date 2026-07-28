@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Image Tools — ToolLab{% endblock %}
+{% block content %}
+<section class="hero" style="padding:40px 0">
+  <h1>🖼️ Image Tools</h1>
+  <p class="hero-sub">Remove backgrounds, upscale, and extract color palettes — free and instant.</p>
+</section>
+
+<div class="tabs">
+  <button class="tab {% if active_tab == 'remove-bg' or not active_tab %}active{% endif %}" onclick="showTab('remove-bg')">Remove Background</button>
+  <button class="tab {% if active_tab == 'upscale' %}active{% endif %}" onclick="showTab('upscale')">Upscale</button>
+  <button class="tab {% if active_tab == 'palette' %}active{% endif %}" onclick="showTab('palette')">Color Palette</button>
+</div>
+
+<!-- REMOVE BG -->
+<div id="tab-remove-bg" class="tool-section {% if active_tab and active_tab != 'remove-bg' %}hidden{% endif %}">
+  <h2>Remove Background</h2>
+  <p class="text-dim mb-16">AI-powered background removal. Works on photos, products, and more. Free, no API key needed.</p>
+  <form action="/image/remove-bg" method="post" enctype="multipart/form-data">
+    <div class="upload-zone" id="rmbg-drop">
+      <div class="upload-icon">✂️</div>
+      <p>Drop an image here or click to upload</p>
+      <input type="file" name="file" accept="image/*" hidden id="rmbg-input">
+      <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="rmbg-filename"></p>
+    </div>
+    <button type="submit" class="btn-lg mt-24">Remove Background →</button>
+  </form>
+</div>
+
+<!-- UPSCALE -->
+<div id="tab-upscale" class="tool-section {% if active_tab != 'upscale' %}hidden{% endif %}">
+  <h2>Upscale Image</h2>
+  <p class="text-dim mb-16">Double or triple your image resolution. Free, no API key needed.</p>
+  <form action="/image/upscale" method="post" enctype="multipart/form-data">
+    <div class="upload-zone" id="upscale-drop">
+      <div class="upload-icon">🔍</div>
+      <p>Drop an image here or click to upload</p>
+      <input type="file" name="file" accept="image/*" hidden id="upscale-input">
+      <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="upscale-filename"></p>
+    </div>
+    <label class="mt-16">Scale factor</label>
+    <select name="scale" style="max-width:200px">
+      <option value="2">2x</option>
+      <option value="3">3x</option>
+      <option value="4">4x</option>
+    </select>
+    <button type="submit" class="btn-lg mt-24">Upscale Image →</button>
+  </form>
+</div>
+
+<!-- PALETTE -->
+<div id="tab-palette" class="tool-section {% if active_tab != 'palette' %}hidden{% endif %}">
+  <h2>Color Palette Generator</h2>
+  <p class="text-dim mb-16">Extract the dominant colors from any image. Great for designers.</p>
+  <div class="card">
+    <div class="upload-zone" id="palette-drop">
+      <div class="upload-icon">🎨</div>
+      <p>Drop an image here to extract its palette</p>
+      <input type="file" accept="image/*" hidden id="palette-input">
+    </div>
+    <div id="palette-result" class="result-area hidden"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.upload-zone').forEach(zone => {
+  const input = zone.querySelector('input[type=file]');
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); input.files = e.dataTransfer.files; updateLabel(zone, input); });
+  input.addEventListener('change', () => updateLabel(zone, input));
+});
+
+function updateLabel(zone, input) {
+  const label = zone.querySelector('p:last-of-type');
+  if (label && input.files.length) label.textContent = input.files[0].name;
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tool-section').forEach(s => s.classList.add('hidden'));
+  document.getElementById(`tab-${name}`)?.classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+{% endblock %}

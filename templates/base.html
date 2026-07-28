@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ToolLab{% endblock %} — Free Online AI Tools</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dark">
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="logo">🔧 ToolLab</a>
+      <div class="nav-links">
+        <div class="tool-switcher">
+          <a href="/pdf" class="{% if subdomain == 'pdf' %}active{% endif %}">📄 PDF</a>
+          <a href="/image" class="{% if subdomain == 'image' %}active{% endif %}">🖼️ Image</a>
+          <a href="/voice" class="{% if subdomain == 'voice' %}active{% endif %}">🎙️ Voice</a>
+        </div>
+        <a href="/pricing">Pricing</a>
+        {% if user %}
+          <a href="/auth/account">{{ user.email }}</a>
+          <a href="/auth/logout" class="btn-sm btn-outline">Logout</a>
+        {% else %}
+          <a href="/auth/login">Login</a>
+          <a href="/auth/signup" class="btn-sm">Sign Up</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>&copy; 2026 ToolLab. Free AI-powered tools. No signup required for basic use.</p>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}ToolLab — Free Online AI Tools{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Free AI-Powered Tools</h1>
+  <p class="hero-sub">Merge PDFs, remove backgrounds, generate speech — all free, no signup required. Your API key, your tools.</p>
+</section>
+
+<section class="grid">
+  <a href="/pdf" class="card" style="text-decoration:none;color:inherit">
+    <h2>📄 PDF Tools</h2>
+    <p class="text-dim">Merge, compress, summarize, and chat with PDFs. AI-powered document analysis.</p>
+    <span class="btn mt-16" style="margin-top:16px">Open PDF Tools →</span>
+  </a>
+  <a href="/image" class="card" style="text-decoration:none;color:inherit">
+    <h2>🖼️ Image Tools</h2>
+    <p class="text-dim">Remove backgrounds, upscale images, extract color palettes. All in your browser.</p>
+    <span class="btn mt-16" style="margin-top:16px">Open Image Tools →</span>
+  </a>
+  <a href="/voice" class="card" style="text-decoration:none;color:inherit">
+    <h2>🎙️ Voice Tools</h2>
+    <p class="text-dim">Text to speech, speech to text. Natural AI voices powered by your own API key.</p>
+    <span class="btn mt-16" style="margin-top:16px">Open Voice Tools →</span>
+  </a>
+</section>
+
+<section style="text-align:center;margin:80px 0 40px">
+  <h2 style="margin-bottom:16px">How It Works</h2>
+  <div class="grid grid-3" style="margin-top:32px">
+    <div class="card">
+      <h3>1. Pick a Tool</h3>
+      <p class="text-dim">Choose PDF, Image, or Voice. No account needed for basic tools.</p>
+    </div>
+    <div class="card">
+      <h3>2. Bring Your Own Key</h3>
+      <p class="text-dim">AI features use your OpenAI key. You control usage and costs. We never see your data.</p>
+    </div>
+    <div class="card">
+      <h3>3. Get Results</h3>
+      <p class="text-dim">Download instantly. No queues, no watermarks, no ads on Pro.</p>
+    </div>
+  </div>
+</section>
+
+<section style="text-align:center;margin:60px 0">
+  <h2 style="margin-bottom:16px">Go Pro</h2>
+  <p class="text-dim" style="margin-bottom:32px">Unlimited usage, priority processing, no ads. One subscription for all tools.</p>
+  <div class="pricing-grid" style="max-width:500px;margin:0 auto">
+    <div class="pricing-card featured">
+      <h3>Pro</h3>
+      <div class="price">$5<span>/mo</span></div>
+      <ul style="list-style:none;text-align:left;margin:24px 0">
+        <li>✓ Unlimited tool usage</li>
+        <li>✓ All AI features</li>
+        <li>✓ Priority processing</li>
+        <li>✓ No ads</li>
+        <li>✓ Cancel anytime</li>
+      </ul>
+      <a href="/auth/signup" class="btn-lg" style="display:block;text-align:center">Get Started</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+"""
+toollab.ca — AI-powered utility tools hub
+Subdomain routing: pdf.* / image.* / voice.* / www.*
+"""
+import os
+from fastapi import FastAPI, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.sessions import SessionMiddleware
+
+from routers import home, pdf, image, voice, auth
+
+app = FastAPI(title="ToolLab", version="1.0.0")
+
+app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET", "dev-secret-change-me"))
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Jinja2 templates
+templates = Jinja2Templates(directory="templates")
+app.state.templates = templates
+
+# --- Subdomain detection middleware ---
+@app.middleware("http")
+async def detect_subdomain(request: Request, call_next):
+    host = request.headers.get("host", "")
+    subdomain = host.split(".")[0].lower() if "." in host else "www"
+    valid = {"pdf", "image", "voice", "www"}
+    request.state.subdomain = subdomain if subdomain in valid else "www"
+    request.state.tool_name = {
+        "pdf": "PDF Tools", "image": "Image Tools",
+        "voice": "Voice Tools", "www": "ToolLab"
+    }.get(request.state.subdomain, "ToolLab")
+    return await call_next(request)
+
+# --- Routers ---
+app.include_router(home.router)
+app.include_router(pdf.router, prefix="/pdf")
+app.include_router(image.router, prefix="/image")
+app.include_router(voice.router, prefix="/voice")
+app.include_router(auth.router, prefix="/auth")
+
+# Pricing page
+@app.get("/pricing")
+async def pricing(request: Request):
+    return templates.TemplateResponse("pricing.html", {"request": request, "subdomain": request.state.subdomain, "user": request.session.get("user")})
+
+# Health check
+@app.get("/health")
+async def health():
+    return {"service": "ToolLab", "status": "ok"}
+
+# Helper to get template context
+def ctx(request: Request, **extra):
+    return {"request": request, "subdomain": request.state.subdomain,
+            "user": request.session.get("user"), **extra}

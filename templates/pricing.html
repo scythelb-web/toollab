@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Pricing — ToolLab{% endblock %}
+{% block content %}
+<section class="hero" style="padding:40px 0">
+  <h1>Simple Pricing</h1>
+  <p class="hero-sub">One plan. All tools. Cancel anytime.</p>
+</section>
+
+<div class="pricing-grid" style="max-width:600px;margin:0 auto">
+  <div class="pricing-card">
+    <h3>Free</h3>
+    <div class="price">$0<span>/mo</span></div>
+    <ul style="list-style:none;text-align:left;margin:24px 0">
+      <li>✓ PDF merge & compress</li>
+      <li>✓ Image upscale</li>
+      <li>✓ Background removal (3/day)</li>
+      <li>✓ BYOK for AI features</li>
+      <li>— Ads supported</li>
+    </ul>
+    <a href="/auth/signup" class="btn-lg btn-outline" style="display:block;text-align:center">Get Started Free</a>
+  </div>
+  <div class="pricing-card featured">
+    <h3>Pro</h3>
+    <div class="price">$5<span>/mo</span></div>
+    <ul style="list-style:none;text-align:left;margin:24px 0">
+      <li>✓ Everything in Free</li>
+      <li>✓ Unlimited usage</li>
+      <li>✓ Priority processing</li>
+      <li>✓ No ads</li>
+      <li>✓ Cancel anytime</li>
+    </ul>
+    <a href="/auth/signup" class="btn-lg" style="display:block;text-align:center">Go Pro</a>
+  </div>
+</div>
+{% endblock %}

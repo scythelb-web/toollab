@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}PDF Tools — ToolLab{% endblock %}
+{% block content %}
+<section class="hero" style="padding:40px 0">
+  <h1>📄 PDF Tools</h1>
+  <p class="hero-sub">Merge, compress, summarize, and chat with PDFs — free and instant.</p>
+</section>
+
+<div class="tabs">
+  <button class="tab {% if active_tab == 'merge' or not active_tab %}active{% endif %}" onclick="showTab('merge')">Merge PDFs</button>
+  <button class="tab {% if active_tab == 'compress' %}active{% endif %}" onclick="showTab('compress')">Compress</button>
+  <button class="tab {% if active_tab == 'summarize' %}active{% endif %}" onclick="showTab('summarize')">AI Summarize</button>
+  <button class="tab {% if active_tab == 'chat' %}active{% endif %}" onclick="showTab('chat')">Chat with PDF</button>
+</div>
+
+<!-- MERGE -->
+<div id="tab-merge" class="tool-section {% if active_tab and active_tab != 'merge' %}hidden{% endif %}">
+  <h2>Merge PDFs</h2>
+  <p class="text-dim mb-16">Combine multiple PDFs into one. Drag and drop to reorder.</p>
+  <form action="/pdf/merge" method="post" enctype="multipart/form-data" id="merge-form">
+    <div class="upload-zone" id="merge-drop">
+      <div class="upload-icon">📁</div>
+      <p>Drop PDF files here or click to upload</p>
+      <input type="file" name="files" accept=".pdf" multiple hidden id="merge-input">
+      <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="merge-filelist"></p>
+    </div>
+    <button type="submit" class="btn-lg mt-24">Merge PDFs →</button>
+  </form>
+</div>
+
+<!-- COMPRESS -->
+<div id="tab-compress" class="tool-section {% if active_tab != 'compress' %}hidden{% endif %}">
+  <h2>Compress PDF</h2>
+  <p class="text-dim mb-16">Reduce file size while keeping quality.</p>
+  <form action="/pdf/compress" method="post" enctype="multipart/form-data">
+    <div class="upload-zone" id="compress-drop">
+      <div class="upload-icon">🗜️</div>
+      <p>Drop a PDF here or click to upload</p>
+      <input type="file" name="file" accept=".pdf" hidden id="compress-input">
+      <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="compress-filename"></p>
+    </div>
+    <button type="submit" class="btn-lg mt-24">Compress PDF →</button>
+  </form>
+</div>
+
+<!-- SUMMARIZE -->
+<div id="tab-summarize" class="tool-section {% if active_tab != 'summarize' %}hidden{% endif %}">
+  <h2>AI Summarize PDF</h2>
+  <p class="text-dim mb-16">Upload a PDF and get an AI summary. Requires your OpenAI API key.</p>
+  <div class="card">
+    <p class="text-dim">📌 BYOK — paste your OpenAI key below. We never store it.</p>
+    <input type="password" id="openai-key" placeholder="sk-..." class="mt-16" style="max-width:400px">
+    <div class="upload-zone mt-16" id="summarize-drop">
+      <div class="upload-icon">🤖</div>
+      <p>Drop a PDF here to summarize</p>
+      <input type="file" accept=".pdf" hidden id="summarize-input">
+    </div>
+    <div id="summarize-result" class="result-area hidden"></div>
+  </div>
+</div>
+
+<!-- CHAT -->
+<div id="tab-chat" class="tool-section {% if active_tab != 'chat' %}hidden{% endif %}">
+  <h2>Chat with PDF</h2>
+  <p class="text-dim mb-16">Ask questions about your document. Requires your OpenAI API key.</p>
+  <div class="card">
+    <p class="text-dim">📌 BYOK — paste your OpenAI key below.</p>
+    <input type="password" id="openai-key-chat" placeholder="sk-..." class="mt-16" style="max-width:400px">
+    <div class="upload-zone mt-16" id="chat-drop">
+      <div class="upload-icon">💬</div>
+      <p>Drop a PDF here, then ask questions</p>
+      <input type="file" accept=".pdf" hidden id="chat-input">
+    </div>
+    <div id="chat-result" class="result-area hidden"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.upload-zone').forEach(zone => {
+  const input = zone.querySelector('input[type=file]');
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); input.files = e.dataTransfer.files; updateLabel(zone, input); });
+  input.addEventListener('change', () => updateLabel(zone, input));
+});
+
+function updateLabel(zone, input) {
+  const label = zone.querySelector('p:last-of-type');
+  if (label && input.files.length) {
+    label.textContent = Array.from(input.files).map(f => f.name).join(', ');
+  }
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tool-section').forEach(s => s.classList.add('hidden'));
+  document.querySelector(`.tab:nth-${['merge','compress','summarize','chat'].indexOf(name)+1}`)?.classList.add('active');
+  document.getElementById(`tab-${name}`)?.classList.remove('hidden');
+}
+</script>
+{% endblock %}

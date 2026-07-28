@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Login — ToolLab{% endblock %}
+{% block content %}
+<section style="max-width:400px;margin:60px auto">
+  <h1 style="text-align:center;margin-bottom:32px">Login</h1>
+  <div class="card">
+    <form method="post" action="/auth/login">
+      <label for="email">Email</label>
+      <input type="email" name="email" id="email" required placeholder="you@example.com">
+      <label for="password" class="mt-16">Password</label>
+      <input type="password" name="password" id="password" required placeholder="••••••••">
+      <button type="submit" class="btn-lg mt-24" style="width:100%">Login →</button>
+    </form>
+    <p class="text-center mt-16 text-dim">Don't have an account? <a href="/auth/signup">Sign up</a></p>
+  </div>
+</section>
+{% endblock %}

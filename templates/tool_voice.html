@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Voice Tools — ToolLab{% endblock %}
+{% block content %}
+<section class="hero" style="padding:40px 0">
+  <h1>🎙️ Voice Tools</h1>
+  <p class="hero-sub">AI text-to-speech and speech-to-text. Natural voices powered by your OpenAI key.</p>
+</section>
+
+<div class="tabs">
+  <button class="tab {% if active_tab == 'tts' or not active_tab %}active{% endif %}" onclick="showTab('tts')">Text to Speech</button>
+  <button class="tab {% if active_tab == 'stt' %}active{% endif %}" onclick="showTab('stt')">Speech to Text</button>
+</div>
+
+<!-- TTS -->
+<div id="tab-tts" class="tool-section {% if active_tab == 'stt' %}hidden{% endif %}">
+  <h2>Text to Speech</h2>
+  <p class="text-dim mb-16">Convert text to natural-sounding speech. Requires your OpenAI API key.</p>
+  <div class="card">
+    <p class="text-dim">📌 BYOK — paste your OpenAI key below. We never store it.</p>
+    <input type="password" id="openai-key-tts" placeholder="sk-..." class="mt-16" style="max-width:400px">
+    <form action="/voice/tts" method="post" class="mt-16">
+      <label for="tts-text">Text</label>
+      <textarea id="tts-text" name="text" rows="4" placeholder="Enter text to convert to speech..." maxlength="4000"></textarea>
+      <label for="tts-voice" class="mt-16">Voice</label>
+      <select name="voice" id="tts-voice" style="max-width:200px">
+        <option value="alloy">Alloy (neutral)</option>
+        <option value="echo">Echo (male)</option>
+        <option value="fable">Fable (British)</option>
+        <option value="onyx">Onyx (deep)</option>
+        <option value="nova">Nova (female)</option>
+        <option value="shimmer">Shimmer (warm)</option>
+      </select>
+      <button type="submit" class="btn-lg mt-24">Generate Speech →</button>
+    </form>
+  </div>
+</div>
+
+<!-- STT -->
+<div id="tab-stt" class="tool-section {% if active_tab != 'stt' %}hidden{% endif %}">
+  <h2>Speech to Text</h2>
+  <p class="text-dim mb-16">Transcribe audio files to text. Requires your OpenAI API key.</p>
+  <div class="card">
+    <p class="text-dim">📌 BYOK — paste your OpenAI key below.</p>
+    <input type="password" id="openai-key-stt" placeholder="sk-..." class="mt-16" style="max-width:400px">
+    <form action="/voice/stt" method="post" enctype="multipart/form-data" class="mt-16">
+      <div class="upload-zone" id="stt-drop">
+        <div class="upload-icon">🎤</div>
+        <p>Drop an audio file here (mp3, wav, m4a)</p>
+        <input type="file" name="file" accept="audio/*" hidden id="stt-input">
+        <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="stt-filename"></p>
+      </div>
+      <button type="submit" class="btn-lg mt-24">Transcribe →</button>
+    </form>
+    <div id="stt-result" class="result-area hidden mt-24"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.upload-zone').forEach(zone => {
+  const input = zone.querySelector('input[type=file]');
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+  zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); input.files = e.dataTransfer.files; updateLabel(zone, input); });
+  input.addEventListener('change', () => updateLabel(zone, input));
+});
+
+function updateLabel(zone, input) {
+  const label = zone.querySelector('p:last-of-type');
+  if (label && input.files.length) label.textContent = input.files[0].name;
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tool-section').forEach(s => s.classList.add('hidden'));
+  document.getElementById(`tab-${name}`)?.classList.remove('hidden');
+  event.target.classList.add('active');
+}
+</script>
+{% endblock %}
