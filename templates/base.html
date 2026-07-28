@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="google-adsense-account" content="ca-pub-8191097225084387">
   <title>{% block title %}ToolLab{% endblock %} — Free Online AI Tools</title>
   <link rel="stylesheet" href="/static/style.css">
   {% if show_ads and adsense_pub_id %}
@@ -31,35 +32,9 @@
     </div>
   </nav>
 
-  {% if show_ads and adsense_pub_id %}
-  <!-- Top banner ad -->
-  <div class="ad-container ad-banner">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="{{ adsense_pub_id }}"
-         data-ad-slot=""
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
-  {% endif %}
-
   <main>
     {% block content %}{% endblock %}
   </main>
-
-  {% if show_ads and adsense_pub_id %}
-  <!-- Bottom banner ad -->
-  <div class="ad-container ad-banner" style="max-width:1200px;margin:0 auto 32px;padding:0 24px">
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="{{ adsense_pub_id }}"
-         data-ad-slot=""
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  </div>
-  {% endif %}
 
   <footer>
     <p>&copy; 2026 ToolLab. Free AI-powered tools. No signup required for basic use.</p>
