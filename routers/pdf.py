@@ -2,15 +2,13 @@ from fastapi import APIRouter, Request, File, UploadFile, Form
 from fastapi.responses import HTMLResponse, StreamingResponse
 import io
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
+from main import ctx
 
 router = APIRouter()
 
 @router.get("/", response_class=HTMLResponse)
 async def pdf_home(request: Request):
-    return request.app.state.templates.TemplateResponse(
-        "tool_pdf.html", {"request": request, "subdomain": request.state.subdomain,
-                           "user": request.session.get("user")}
-    )
+    return request.app.state.templates.TemplateResponse("tool_pdf.html", ctx(request))
 
 @router.post("/merge", response_class=StreamingResponse)
 async def pdf_merge(request: Request, files: list[UploadFile] = File(...)):
@@ -40,13 +38,9 @@ async def pdf_compress(request: Request, file: UploadFile = File(...)):
 @router.get("/summarize", response_class=HTMLResponse)
 async def pdf_summarize_page(request: Request):
     return request.app.state.templates.TemplateResponse(
-        "tool_pdf.html", {"request": request, "subdomain": request.state.subdomain,
-                           "active_tab": "summarize", "user": request.session.get("user")}
-    )
+        "tool_pdf.html", ctx(request, active_tab="summarize"))
 
 @router.get("/chat", response_class=HTMLResponse)
 async def pdf_chat_page(request: Request):
     return request.app.state.templates.TemplateResponse(
-        "tool_pdf.html", {"request": request, "subdomain": request.state.subdomain,
-                           "active_tab": "chat", "user": request.session.get("user")}
-    )
+        "tool_pdf.html", ctx(request, active_tab="chat"))

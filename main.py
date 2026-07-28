@@ -22,6 +22,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 app.state.templates = templates
 
+# AdSense config
+ADSENSE_PUB_ID = os.getenv("ADSENSE_PUB_ID", "")
+
 # --- Subdomain detection middleware ---
 @app.middleware("http")
 async def detect_subdomain(request: Request, call_next):
@@ -45,7 +48,7 @@ app.include_router(auth.router, prefix="/auth")
 # Pricing page
 @app.get("/pricing")
 async def pricing(request: Request):
-    return templates.TemplateResponse("pricing.html", {"request": request, "subdomain": request.state.subdomain, "user": request.session.get("user")})
+    return templates.TemplateResponse("pricing.html", ctx(request))
 
 # Health check
 @app.get("/health")
@@ -54,5 +57,13 @@ async def health():
 
 # Helper to get template context
 def ctx(request: Request, **extra):
-    return {"request": request, "subdomain": request.state.subdomain,
-            "user": request.session.get("user"), **extra}
+    user = request.session.get("user") or {}
+    show_ads = bool(ADSENSE_PUB_ID) and not user.get("is_pro", False)
+    return {
+        "request": request,
+        "subdomain": request.state.subdomain,
+        "user": user if request.session.get("user") else None,
+        "show_ads": show_ads,
+        "adsense_pub_id": ADSENSE_PUB_ID,
+        **extra,
+    }

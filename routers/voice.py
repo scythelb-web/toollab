@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, Form, File, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 from openai import OpenAI
 import io
+from main import ctx
 
 router = APIRouter()
 
@@ -11,10 +12,7 @@ def get_client(request: Request) -> OpenAI | None:
 
 @router.get("/", response_class=HTMLResponse)
 async def voice_home(request: Request):
-    return request.app.state.templates.TemplateResponse(
-        "tool_voice.html", {"request": request, "subdomain": request.state.subdomain,
-                             "user": request.session.get("user")}
-    )
+    return request.app.state.templates.TemplateResponse("tool_voice.html", ctx(request))
 
 @router.post("/tts", response_class=StreamingResponse)
 async def text_to_speech(request: Request, text: str = Form(...), voice: str = Form("alloy")):

@@ -2,15 +2,13 @@ from fastapi import APIRouter, Request, File, Form, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 from PIL import Image
 import io
+from main import ctx
 
 router = APIRouter()
 
 @router.get("/", response_class=HTMLResponse)
 async def image_home(request: Request):
-    return request.app.state.templates.TemplateResponse(
-        "tool_image.html", {"request": request, "subdomain": request.state.subdomain,
-                             "user": request.session.get("user")}
-    )
+    return request.app.state.templates.TemplateResponse("tool_image.html", ctx(request))
 
 @router.post("/remove-bg")
 async def remove_background(request: Request, file: UploadFile = File(...)):
@@ -34,6 +32,4 @@ async def upscale_image(request: Request, file: UploadFile = File(...), scale: i
 @router.get("/palette", response_class=HTMLResponse)
 async def palette_page(request: Request):
     return request.app.state.templates.TemplateResponse(
-        "tool_image.html", {"request": request, "subdomain": request.state.subdomain,
-                             "active_tab": "palette", "user": request.session.get("user")}
-    )
+        "tool_image.html", ctx(request, active_tab="palette"))

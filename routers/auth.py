@@ -1,32 +1,22 @@
 from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
-import os
+from main import ctx
 
 router = APIRouter()
 
-# Simple in-memory user store (replace with DB for production)
-# For now: email-based "accounts" stored in session
-
 @router.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
-    return request.app.state.templates.TemplateResponse(
-        "login.html", {"request": request, "subdomain": request.state.subdomain,
-                        "user": request.session.get("user")}
-    )
+    return request.app.state.templates.TemplateResponse("login.html", ctx(request))
 
 @router.post("/login")
 async def login(request: Request, email: str = Form(...), password: str = Form(...)):
-    # Simple session-based auth for MVP
     request.session["user"] = {"email": email}
     request.session["openai_key"] = request.session.get("openai_key", "")
     return RedirectResponse("/", status_code=303)
 
 @router.get("/signup", response_class=HTMLResponse)
 async def signup_page(request: Request):
-    return request.app.state.templates.TemplateResponse(
-        "signup.html", {"request": request, "subdomain": request.state.subdomain,
-                         "user": request.session.get("user")}
-    )
+    return request.app.state.templates.TemplateResponse("signup.html", ctx(request))
 
 @router.post("/signup")
 async def signup(request: Request, email: str = Form(...), password: str = Form(...)):
@@ -43,9 +33,7 @@ async def account(request: Request):
     user = request.session.get("user")
     if not user:
         return RedirectResponse("/auth/login", status_code=303)
-    return request.app.state.templates.TemplateResponse(
-        "account.html", {"request": request, "user": user, "subdomain": request.state.subdomain}
-    )
+    return request.app.state.templates.TemplateResponse("account.html", ctx(request))
 
 @router.post("/settings")
 async def save_settings(request: Request, openai_key: str = Form("")):
