@@ -3,10 +3,27 @@
 {% block content %}
 <section style="max-width:500px;margin:40px auto">
   <h1>Account Settings</h1>
+
+  {% if user.is_pro %}
+  <div class="card mt-24" style="border-color:var(--green);background:rgba(63,185,80,0.05)">
+    <h3>⭐ Pro Member</h3>
+    <p class="text-dim mt-16">You have full access. No ads, unlimited usage.</p>
+  </div>
+  {% endif %}
+
   <div class="card mt-24">
     <h3>Profile</h3>
     <p class="text-dim mt-16">Email: <strong>{{ user.email }}</strong></p>
+    {% if not user.is_pro %}
+    <p class="text-dim mt-8" style="font-size:0.85rem">Upgrade to Pro to remove ads and unlock unlimited usage.</p>
+    <form method="post" action="/stripe/create-checkout" class="mt-16">
+      <button type="submit" class="btn">Upgrade to Pro — $5/mo</button>
+    </form>
+    {% else %}
+    <p class="text-dim mt-8" style="font-size:0.85rem">Manage your subscription in <a href="https://billing.stripe.com/p/login/placeholder" target="_blank">Stripe Billing</a>.</p>
+    {% endif %}
   </div>
+
   <div class="card mt-24">
     <h3>API Key (BYOK)</h3>
     <p class="text-dim">Your OpenAI API key is used for AI features (PDF summarize, TTS, STT). We never store it on disk — session-only.</p>

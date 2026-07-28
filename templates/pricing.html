@@ -29,7 +29,9 @@
       <li>✓ No ads</li>
       <li>✓ Cancel anytime</li>
     </ul>
-    <a href="/auth/signup" class="btn-lg" style="display:block;text-align:center">Go Pro</a>
+    <form method="post" action="/stripe/create-checkout">
+      <button type="submit" class="btn-lg" style="display:block;width:100%;text-align:center">Go Pro — $5/mo</button>
+    </form>
   </div>
 </div>
 {% endblock %}
