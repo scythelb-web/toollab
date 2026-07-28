@@ -52,3 +52,12 @@ async def pricing(request: Request):
 @app.get("/health")
 async def health():
     return {"service": "ToolLab", "status": "ok"}
+
+# Google AdSense verification
+@app.get("/ads.txt")
+async def ads_txt():
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse(
+        "google.com, pub-8191097225084387, DIRECT, f08c47fec0942fa0",
+        media_type="text/plain"
+    )
