@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Form, File, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 from openai import OpenAI
 import io
-from main import ctx
+from context import ctx
 
 router = APIRouter()
 

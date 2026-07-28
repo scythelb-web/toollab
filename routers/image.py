@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, File, Form, UploadFile
 from fastapi.responses import HTMLResponse, StreamingResponse
 from PIL import Image
 import io
-from main import ctx
+from context import ctx
 
 router = APIRouter()
 

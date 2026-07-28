@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
 from routers import home, pdf, image, voice, auth
+from context import ctx
 
 app = FastAPI(title="ToolLab", version="1.0.0")
 
@@ -21,9 +22,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Jinja2 templates
 templates = Jinja2Templates(directory="templates")
 app.state.templates = templates
-
-# AdSense config
-ADSENSE_PUB_ID = os.getenv("ADSENSE_PUB_ID", "")
 
 # --- Subdomain detection middleware ---
 @app.middleware("http")
@@ -54,16 +52,3 @@ async def pricing(request: Request):
 @app.get("/health")
 async def health():
     return {"service": "ToolLab", "status": "ok"}
-
-# Helper to get template context
-def ctx(request: Request, **extra):
-    user = request.session.get("user") or {}
-    show_ads = bool(ADSENSE_PUB_ID) and not user.get("is_pro", False)
-    return {
-        "request": request,
-        "subdomain": request.state.subdomain,
-        "user": user if request.session.get("user") else None,
-        "show_ads": show_ads,
-        "adsense_pub_id": ADSENSE_PUB_ID,
-        **extra,
-    }
