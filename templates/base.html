@@ -26,10 +26,11 @@
         </div>
         {% if user and user.is_pro %}
           <span class="pro-badge" title="Pro — unlimited usage">⭐ PRO</span>
-        {% elif subdomain in ('pdf', 'image', 'voice') %}
-          {% set rem = usage_remaining.get(subdomain, 0) %}
+        {% elif request.url.path.startswith('/pdf') or request.url.path.startswith('/image') or request.url.path.startswith('/voice') %}
+          {% set cat = 'pdf' if request.url.path.startswith('/pdf') else 'image' if request.url.path.startswith('/image') else 'voice' %}
+          {% set rem = usage_remaining.get(cat, 0) %}
           <span class="usage-badge" title="{{ rem }} free uses remaining today">
-            {% if rem == 0 or rem == '0' %}<span style="color:var(--danger)">0 left</span>
+            {% if rem == 0 %}<span class="low">0 left</span>
             {% else %}{{ rem }} left
             {% endif %}
           </span>
