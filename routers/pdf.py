@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 import io
 from PyPDF2 import PdfMerger, PdfReader, PdfWriter
 from context import ctx
+from limits import check_and_increment, limit_exceeded_response
 
 router = APIRouter()
 
@@ -12,6 +13,9 @@ async def pdf_home(request: Request):
 
 @router.post("/merge", response_class=StreamingResponse)
 async def pdf_merge(request: Request, files: list[UploadFile] = File(...)):
+    usage = check_and_increment(request, "pdf")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "pdf")
     merger = PdfMerger()
     for f in files:
         merger.append(io.BytesIO(await f.read()))
@@ -25,6 +29,9 @@ async def pdf_merge(request: Request, files: list[UploadFile] = File(...)):
 
 @router.post("/compress")
 async def pdf_compress(request: Request, file: UploadFile = File(...)):
+    usage = check_and_increment(request, "pdf")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "pdf")
     reader = PdfReader(io.BytesIO(await file.read()))
     writer = PdfWriter()
     for page in reader.pages:
@@ -40,6 +47,9 @@ async def pdf_compress(request: Request, file: UploadFile = File(...)):
 @router.post("/to-word")
 async def pdf_to_word(request: Request, file: UploadFile = File(...)):
     """Convert PDF to Word (.docx) — extracts text from each page."""
+    usage = check_and_increment(request, "pdf")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "pdf")
     from docx import Document
 
     reader = PdfReader(io.BytesIO(await file.read()))
@@ -64,6 +74,9 @@ async def pdf_to_word(request: Request, file: UploadFile = File(...)):
 @router.post("/split")
 async def pdf_split(request: Request, file: UploadFile = File(...)):
     """Split PDF into individual pages as a ZIP."""
+    usage = check_and_increment(request, "pdf")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "pdf")
     import zipfile
 
     reader = PdfReader(io.BytesIO(await file.read()))
@@ -87,6 +100,9 @@ async def pdf_split(request: Request, file: UploadFile = File(...)):
 @router.post("/rotate")
 async def pdf_rotate(request: Request, file: UploadFile = File(...), degrees: int = Form(90)):
     """Rotate all pages in a PDF by 90, 180, or 270 degrees."""
+    usage = check_and_increment(request, "pdf")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "pdf")
     reader = PdfReader(io.BytesIO(await file.read()))
     writer = PdfWriter()
     for page in reader.pages:

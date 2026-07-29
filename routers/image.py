@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from PIL import Image
 import io
 from context import ctx
+from limits import check_and_increment, limit_exceeded_response
 
 router = APIRouter()
 
@@ -12,6 +13,9 @@ async def image_home(request: Request):
 
 @router.post("/remove-bg")
 async def remove_background(request: Request, file: UploadFile = File(...)):
+    usage = check_and_increment(request, "image")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "image")
     from rembg import remove
     img = await file.read()
     result = remove(img)
@@ -20,6 +24,9 @@ async def remove_background(request: Request, file: UploadFile = File(...)):
 
 @router.post("/upscale")
 async def upscale_image(request: Request, file: UploadFile = File(...), scale: int = Form(2)):
+    usage = check_and_increment(request, "image")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "image")
     img = Image.open(io.BytesIO(await file.read()))
     w, h = img.size
     img = img.resize((w * scale, h * scale), Image.LANCZOS)
@@ -32,6 +39,9 @@ async def upscale_image(request: Request, file: UploadFile = File(...), scale: i
 @router.post("/convert")
 async def convert_image(request: Request, file: UploadFile = File(...), fmt: str = Form("png")):
     """Convert image to PNG, JPEG, or WebP."""
+    usage = check_and_increment(request, "image")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "image")
     img = Image.open(io.BytesIO(await file.read()))
     if img.mode in ("RGBA", "P") and fmt.lower() == "jpeg":
         img = img.convert("RGB")
@@ -46,6 +56,9 @@ async def convert_image(request: Request, file: UploadFile = File(...), fmt: str
 async def resize_image(request: Request, file: UploadFile = File(...),
                         width: int = Form(0), height: int = Form(0), percent: int = Form(0)):
     """Resize image by dimensions or percentage."""
+    usage = check_and_increment(request, "image")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "image")
     img = Image.open(io.BytesIO(await file.read()))
     w, h = img.size
     if percent > 0:

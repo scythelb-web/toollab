@@ -24,6 +24,17 @@
           <a href="/text" class="">📝 Text</a>
           <a href="/calc" class="">🧮 Calc</a>
         </div>
+        {% if user and user.is_pro %}
+          <span class="pro-badge" title="Pro — unlimited usage">⭐ PRO</span>
+        {% elif subdomain in ('pdf', 'image', 'voice') %}
+          {% set rem = usage_remaining.get(subdomain, 0) %}
+          <span class="usage-badge" title="{{ rem }} free uses remaining today">
+            {% if rem == 0 or rem == '0' %}<span style="color:var(--danger)">0 left</span>
+            {% else %}{{ rem }} left
+            {% endif %}
+          </span>
+          {% if not user %}<a href="/pricing" style="font-size:0.85rem;opacity:0.7">Go Pro →</a>{% endif %}
+        {% endif %}
         <a href="/pricing">Pricing</a>
         {% if user %}
           <a href="/auth/account">{{ user.email }}</a>

@@ -25,6 +25,9 @@ nav{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 24
 .nav-links a:hover{color:var(--text)}
 .tool-switcher{display:flex;gap:4px;background:var(--bg);border-radius:var(--radius);padding:3px}
 .tool-switcher a{padding:6px 14px;border-radius:6px;font-size:0.85rem;font-weight:500;color:var(--text-dim);transition:all .15s}
+.usage-badge{font-size:0.8rem;color:var(--text-dim);background:var(--bg);padding:3px 10px;border-radius:12px;border:1px solid var(--border);white-space:nowrap}
+.usage-badge .low{color:var(--danger);font-weight:600}
+.pro-badge{font-size:0.8rem;color:#f0c040;background:rgba(240,192,64,0.1);padding:3px 10px;border-radius:12px;border:1px solid rgba(240,192,64,0.3);white-space:nowrap}
 .tool-switcher a:hover,.tool-switcher a.active{background:var(--bg-card);color:var(--text)}
 
 /* Buttons */

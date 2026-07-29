@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse, StreamingResponse
 from openai import OpenAI
 import io
 from context import ctx
+from limits import check_and_increment, limit_exceeded_response
 
 router = APIRouter()
 
@@ -16,6 +17,9 @@ async def voice_home(request: Request):
 
 @router.post("/tts", response_class=StreamingResponse)
 async def text_to_speech(request: Request, text: str = Form(...), voice: str = Form("alloy")):
+    usage = check_and_increment(request, "voice")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "voice")
     client = get_client(request)
     if not client:
         from fastapi.responses import PlainTextResponse
@@ -26,6 +30,9 @@ async def text_to_speech(request: Request, text: str = Form(...), voice: str = F
 
 @router.post("/stt")
 async def speech_to_text(request: Request, file: UploadFile = File(...)):
+    usage = check_and_increment(request, "voice")
+    if not usage["allowed"]:
+        return limit_exceeded_response(request, "voice")
     client = get_client(request)
     if not client:
         from fastapi.responses import PlainTextResponse
