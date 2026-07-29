@@ -3,14 +3,17 @@
 {% block content %}
 <section class="hero" style="padding:40px 0">
   <h1>📄 PDF Tools</h1>
-  <p class="hero-sub">Merge, compress, summarize, and chat with PDFs — free and instant.</p>
+  <p class="hero-sub">Merge, compress, convert to Word, split, rotate, summarize, and chat with PDFs — free and instant.</p>
 </section>
 
 <div class="tabs">
-  <button class="tab {% if active_tab == 'merge' or not active_tab %}active{% endif %}" onclick="showTab('merge')">Merge PDFs</button>
+  <button class="tab {% if active_tab == 'merge' or not active_tab %}active{% endif %}" onclick="showTab('merge')">Merge</button>
   <button class="tab {% if active_tab == 'compress' %}active{% endif %}" onclick="showTab('compress')">Compress</button>
+  <button class="tab {% if active_tab == 'to-word' %}active{% endif %}" onclick="showTab('to-word')">PDF→Word</button>
+  <button class="tab {% if active_tab == 'split' %}active{% endif %}" onclick="showTab('split')">Split</button>
+  <button class="tab {% if active_tab == 'rotate' %}active{% endif %}" onclick="showTab('rotate')">Rotate</button>
   <button class="tab {% if active_tab == 'summarize' %}active{% endif %}" onclick="showTab('summarize')">AI Summarize</button>
-  <button class="tab {% if active_tab == 'chat' %}active{% endif %}" onclick="showTab('chat')">Chat with PDF</button>
+  <button class="tab {% if active_tab == 'chat' %}active{% endif %}" onclick="showTab('chat')">Chat</button>
 </div>
 
 <!-- MERGE -->
@@ -40,6 +43,57 @@
       <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="compress-filename"></p>
     </div>
     <button type="submit" class="btn-lg mt-24">Compress PDF →</button>
+  </form>
+</div>
+
+<!-- TO WORD -->
+<div id="tab-to-word" class="tool-section {% if active_tab != 'to-word' %}hidden{% endif %}">
+  <h2>PDF to Word</h2>
+  <p class="text-dim mb-16">Convert your PDF to an editable Word (.docx) document. Extracts text from every page.</p>
+  <form action="/pdf/to-word" method="post" enctype="multipart/form-data">
+    <div class="upload-zone" id="toword-drop">
+      <div class="upload-icon">📝</div>
+      <p>Drop a PDF here or click to upload</p>
+      <input type="file" name="file" accept=".pdf" hidden id="toword-input">
+      <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="toword-filename"></p>
+    </div>
+    <button type="submit" class="btn-lg mt-24">Convert to Word →</button>
+  </form>
+</div>
+
+<!-- SPLIT -->
+<div id="tab-split" class="tool-section {% if active_tab != 'split' %}hidden{% endif %}">
+  <h2>Split PDF</h2>
+  <p class="text-dim mb-16">Extract every page into its own PDF file. Download as a ZIP.</p>
+  <form action="/pdf/split" method="post" enctype="multipart/form-data">
+    <div class="upload-zone" id="split-drop">
+      <div class="upload-icon">✂️</div>
+      <p>Drop a PDF here or click to upload</p>
+      <input type="file" name="file" accept=".pdf" hidden id="split-input">
+      <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="split-filename"></p>
+    </div>
+    <button type="submit" class="btn-lg mt-24">Split PDF →</button>
+  </form>
+</div>
+
+<!-- ROTATE -->
+<div id="tab-rotate" class="tool-section {% if active_tab != 'rotate' %}hidden{% endif %}">
+  <h2>Rotate PDF</h2>
+  <p class="text-dim mb-16">Rotate all pages in your PDF by 90°, 180°, or 270°.</p>
+  <form action="/pdf/rotate" method="post" enctype="multipart/form-data">
+    <div class="upload-zone" id="rotate-drop">
+      <div class="upload-icon">🔄</div>
+      <p>Drop a PDF here or click to upload</p>
+      <input type="file" name="file" accept=".pdf" hidden id="rotate-input">
+      <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="rotate-filename"></p>
+    </div>
+    <label class="mt-16">Rotation</label>
+    <select name="degrees" style="max-width:200px">
+      <option value="90">90° clockwise</option>
+      <option value="180">180°</option>
+      <option value="270">270° clockwise</option>
+    </select>
+    <button type="submit" class="btn-lg mt-24">Rotate PDF →</button>
   </form>
 </div>
 
@@ -97,8 +151,8 @@ function updateLabel(zone, input) {
 function showTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tool-section').forEach(s => s.classList.add('hidden'));
-  document.querySelector(`.tab:nth-${['merge','compress','summarize','chat'].indexOf(name)+1}`)?.classList.add('active');
   document.getElementById(`tab-${name}`)?.classList.remove('hidden');
+  event.target.classList.add('active');
 }
 </script>
 {% endblock %}

@@ -3,13 +3,15 @@
 {% block content %}
 <section class="hero" style="padding:40px 0">
   <h1>🖼️ Image Tools</h1>
-  <p class="hero-sub">Remove backgrounds, upscale, and extract color palettes — free and instant.</p>
+  <p class="hero-sub">Remove backgrounds, convert formats, upscale, resize, and extract color palettes — free and instant.</p>
 </section>
 
 <div class="tabs">
-  <button class="tab {% if active_tab == 'remove-bg' or not active_tab %}active{% endif %}" onclick="showTab('remove-bg')">Remove Background</button>
+  <button class="tab {% if active_tab == 'remove-bg' or not active_tab %}active{% endif %}" onclick="showTab('remove-bg')">Remove BG</button>
+  <button class="tab {% if active_tab == 'convert' %}active{% endif %}" onclick="showTab('convert')">Convert</button>
   <button class="tab {% if active_tab == 'upscale' %}active{% endif %}" onclick="showTab('upscale')">Upscale</button>
-  <button class="tab {% if active_tab == 'palette' %}active{% endif %}" onclick="showTab('palette')">Color Palette</button>
+  <button class="tab {% if active_tab == 'resize' %}active{% endif %}" onclick="showTab('resize')">Resize</button>
+  <button class="tab {% if active_tab == 'palette' %}active{% endif %}" onclick="showTab('palette')">Palette</button>
 </div>
 
 <!-- REMOVE BG -->
@@ -24,6 +26,27 @@
       <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="rmbg-filename"></p>
     </div>
     <button type="submit" class="btn-lg mt-24">Remove Background →</button>
+  </form>
+</div>
+
+<!-- CONVERT -->
+<div id="tab-convert" class="tool-section {% if active_tab != 'convert' %}hidden{% endif %}">
+  <h2>Convert Image Format</h2>
+  <p class="text-dim mb-16">Convert between PNG, JPEG, and WebP. Maintains quality, free and instant.</p>
+  <form action="/image/convert" method="post" enctype="multipart/form-data">
+    <div class="upload-zone" id="convert-drop">
+      <div class="upload-icon">🔄</div>
+      <p>Drop an image here or click to upload</p>
+      <input type="file" name="file" accept="image/*" hidden id="convert-input">
+      <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="convert-filename"></p>
+    </div>
+    <label class="mt-16">Convert to</label>
+    <select name="fmt" style="max-width:200px">
+      <option value="png">PNG</option>
+      <option value="jpeg">JPEG</option>
+      <option value="webp">WebP</option>
+    </select>
+    <button type="submit" class="btn-lg mt-24">Convert Image →</button>
   </form>
 </div>
 
@@ -45,6 +68,41 @@
       <option value="4">4x</option>
     </select>
     <button type="submit" class="btn-lg mt-24">Upscale Image →</button>
+  </form>
+</div>
+
+<!-- RESIZE -->
+<div id="tab-resize" class="tool-section {% if active_tab != 'resize' %}hidden{% endif %}">
+  <h2>Resize Image</h2>
+  <p class="text-dim mb-16">Resize by dimensions or percentage. Keeps aspect ratio when using one dimension.</p>
+  <form action="/image/resize" method="post" enctype="multipart/form-data">
+    <div class="upload-zone" id="resize-drop">
+      <div class="upload-icon">📐</div>
+      <p>Drop an image here or click to upload</p>
+      <input type="file" name="file" accept="image/*" hidden id="resize-input">
+      <p class="text-dim" style="margin-top:8px;font-size:0.8rem" id="resize-filename"></p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px">
+      <div>
+        <label>Width (px, optional)</label>
+        <input type="number" name="width" placeholder="e.g. 800" min="1" style="max-width:200px">
+      </div>
+      <div>
+        <label>Height (px, optional)</label>
+        <input type="number" name="height" placeholder="e.g. 600" min="1" style="max-width:200px">
+      </div>
+    </div>
+    <p class="text-dim mt-8" style="font-size:0.85rem">Or resize by percentage:</p>
+    <select name="percent" style="max-width:200px;margin-top:8px">
+      <option value="0">Custom (use width/height above)</option>
+      <option value="25">25%</option>
+      <option value="50">50%</option>
+      <option value="75">75%</option>
+      <option value="125">125%</option>
+      <option value="150">150%</option>
+      <option value="200">200%</option>
+    </select>
+    <button type="submit" class="btn-lg mt-24">Resize Image →</button>
   </form>
 </div>
 
