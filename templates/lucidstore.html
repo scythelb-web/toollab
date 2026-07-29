@@ -82,9 +82,12 @@
 
   {% if submitted %}
   <div class="card" style="padding:32px;text-align:center;border:1px solid var(--green)">
-    <div style="font-size:2.5rem;margin-bottom:12px">✅</div>
-    <h3 style="color:var(--green)">Inquiry Sent!</h3>
+    <div style="font-size:2.5rem;margin-bottom:12px">{% if email_sent %}✅{% else %}📋{% endif %}</div>
+    <h3 style="color:var(--green)">Inquiry Received!</h3>
     <p class="text-dim" style="margin-top:8px">Thanks {{ inquiry.name }}! We'll get back to you at {{ inquiry.email }} about your {{ inquiry.service|lower }} project.</p>
+    {% if email_sent %}
+    <p style="margin-top:4px;font-size:0.85rem;color:var(--green)">Confirmation sent to {{ store_email }}</p>
+    {% endif %}
     <p style="margin-top:16px"><a href="/lucidstore">Submit another →</a></p>
   </div>
   {% else %}
