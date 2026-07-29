@@ -27,7 +27,18 @@ URLS = [
     {"loc": "https://toollab.ca/qr/", "priority": "0.8", "changefreq": "monthly"},
     {"loc": "https://toollab.ca/text/", "priority": "0.7", "changefreq": "monthly"},
     {"loc": "https://toollab.ca/calc/", "priority": "0.7", "changefreq": "monthly"},
+    # Blog
+    {"loc": "https://toollab.ca/blog", "priority": "0.9", "changefreq": "weekly"},
 ]
+
+# Add blog articles to sitemap
+from routers.blog import ARTICLES as BLOG_ARTICLES
+for slug in BLOG_ARTICLES:
+    URLS.append({
+        "loc": f"https://toollab.ca/blog/{slug}",
+        "priority": "0.8",
+        "changefreq": "monthly",
+    })
 
 
 @router.get("/sitemap.xml")

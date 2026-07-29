@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}ToolLab Blog — Free Online Tools Tips & Guides{% endblock %}
+{% block meta_desc %}Tips, guides, and how-tos for getting the most out of free online tools. PDF, image, voice, and productivity articles.{% endblock %}
+
+{% block content %}
+<section class="hero" style="padding:48px 0 32px">
+  <h1>ToolLab Blog</h1>
+  <p class="hero-sub">Tips, guides, and how-tos for getting the most out of free online tools.</p>
+</section>
+
+<section class="grid" style="max-width:900px;margin:0 auto">
+  {% for a in articles %}
+  <article class="card" style="padding:28px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+      <span class="tag">{{ a.category.upper() }}</span>
+      <span class="text-dim" style="font-size:0.85rem">{{ a.date }}</span>
+    </div>
+    <h2 style="font-size:1.25rem;margin-bottom:8px">
+      <a href="/blog/{{ a.slug }}" style="color:var(--text);text-decoration:none">{{ a.title }}</a>
+    </h2>
+    <p class="text-dim" style="margin-bottom:16px">{{ a.description }}</p>
+    <a href="/blog/{{ a.slug }}" style="font-weight:600;font-size:0.9rem">Read article →</a>
+  </article>
+  {% endfor %}
+</section>
+
+<section style="text-align:center;margin:80px 0 40px">
+  <h2 style="margin-bottom:16px">Try the Tools</h2>
+  <p class="text-dim" style="margin-bottom:24px">Every tool mentioned in our articles is free to use — no signup required.</p>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+    <a href="/pdf" class="btn">📄 PDF Tools</a>
+    <a href="/image" class="btn">🖼️ Image Tools</a>
+    <a href="/voice" class="btn">🎙️ Voice Tools</a>
+    <a href="/qr" class="btn">📱 QR Generator</a>
+  </div>
+</section>
+{% endblock %}
