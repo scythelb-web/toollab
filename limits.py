@@ -16,7 +16,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "data", "usage.db")
-FREE_LIMIT = 5  # uses per category per 24h window
+FREE_LIMIT = 10  # uses per category per 24h window
 
 
 def _get_db() -> sqlite3.Connection:
