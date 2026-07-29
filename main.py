@@ -9,7 +9,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 
-from routers import home, pdf, image, voice, auth, stripe, qr, text, calc
+from routers import home, pdf, image, voice, auth, stripe, qr, text, calc, sitemap
 from context import ctx
 
 app = FastAPI(title="ToolLab", version="1.0.0")
@@ -46,6 +46,7 @@ app.include_router(stripe.router, prefix="/stripe")
 app.include_router(qr.router, prefix="/qr")
 app.include_router(text.router, prefix="/text")
 app.include_router(calc.router, prefix="/calc")
+app.include_router(sitemap.router)  # root-level for /sitemap.xml
 
 # Pricing page
 @app.get("/pricing")
