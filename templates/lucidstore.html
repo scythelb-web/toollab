@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}LucidStore — Custom Signs & Stickers{% endblock %}
+{% block meta_desc %}Custom signs, stickers, banners, and vinyl lettering. Locally made, fast turnaround. Get a free quote — contact lucidify@gmail.com{% endblock %}
+
+{% block content %}
+
+<section class="hero" style="background:linear-gradient(135deg, #1a1040 0%, #0d1b2a 50%, #0d1117 100%);padding:72px 24px 56px;text-align:center;border-bottom:1px solid var(--border)">
+  <p style="color:var(--accent);font-size:0.9rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">✦ Signs & Stickers ✦</p>
+  <h1 style="font-size:3rem;margin-bottom:12px">{{ store_name }}</h1>
+  <p class="hero-sub" style="max-width:600px;margin:0 auto 24px">Custom signs, vehicle graphics, stickers, banners, and vinyl lettering. Fast turnaround, local quality.</p>
+  <a href="#inquire" class="btn-lg" style="text-decoration:none">Get a Free Quote</a>
+</section>
+
+<!-- Services -->
+<section style="max-width:1100px;margin:64px auto;padding:0 24px">
+  <h2 style="text-align:center;margin-bottom:8px">What We Make</h2>
+  <p class="text-dim" style="text-align:center;margin-bottom:40px">Everything custom — your design or ours</p>
+
+  <div class="grid grid-3" style="margin-bottom:40px">
+    <div class="card" style="padding:28px;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">🪧</div>
+      <h3>Signs</h3>
+      <p class="text-dim">Storefront signs, directional signage, real estate signs, A-frames, and custom dimensional lettering. Indoor and outdoor rated.</p>
+    </div>
+    <div class="card" style="padding:28px;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">🏷️</div>
+      <h3>Stickers & Decals</h3>
+      <p class="text-dim">Die-cut stickers, vinyl decals, laptop skins, bumper stickers, and bulk orders. Weatherproof and UV-resistant.</p>
+    </div>
+    <div class="card" style="padding:28px;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">🎪</div>
+      <h3>Banners & Displays</h3>
+      <p class="text-dim">Vinyl banners, retractable displays, pop-up booths, and event signage. Any size, reinforced hems and grommets.</p>
+    </div>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="card" style="padding:28px;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">🚗</div>
+      <h3>Vehicle Graphics</h3>
+      <p class="text-dim">Full wraps, partial wraps, door logos, fleet lettering, and window perforation. Mobile advertising that lasts.</p>
+    </div>
+    <div class="card" style="padding:28px;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">🪟</div>
+      <h3>Window Graphics</h3>
+      <p class="text-dim">Storefront window vinyl, frosted glass effects, one-way vision film. Privacy with style.</p>
+    </div>
+    <div class="card" style="padding:28px;text-align:center">
+      <div style="font-size:2.5rem;margin-bottom:12px">✂️</div>
+      <h3>Vinyl Lettering</h3>
+      <p class="text-dim">Custom cut vinyl text for walls, windows, vehicles. Hundreds of fonts and colors available.</p>
+    </div>
+  </div>
+</section>
+
+<!-- How it works -->
+<section style="background:var(--bg-card);padding:64px 24px;text-align:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <h2 style="margin-bottom:32px">How It Works</h2>
+  <div class="grid grid-3" style="max-width:900px;margin:0 auto">
+    <div>
+      <div style="font-size:2rem;margin-bottom:8px">1️⃣</div>
+      <h3>Tell Us What You Need</h3>
+      <p class="text-dim">Fill out the form below with your project details. Size, material, quantity — the more info the better.</p>
+    </div>
+    <div>
+      <div style="font-size:2rem;margin-bottom:8px">2️⃣</div>
+      <h3>Get a Quote</h3>
+      <p class="text-dim">We'll get back to you with pricing and timeline. Usually within 24 hours.</p>
+    </div>
+    <div>
+      <div style="font-size:2rem;margin-bottom:8px">3️⃣</div>
+      <h3>We Make It</h3>
+      <p class="text-dim">Once approved, we produce and deliver. Pickup or local delivery available.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Inquire form -->
+<section id="inquire" style="max-width:650px;margin:64px auto;padding:0 24px">
+  <h2 style="text-align:center;margin-bottom:8px">Get a Quote</h2>
+  <p class="text-dim" style="text-align:center;margin-bottom:32px">Or email us directly: <a href="mailto:{{ store_email }}">{{ store_email }}</a></p>
+
+  {% if submitted %}
+  <div class="card" style="padding:32px;text-align:center;border:1px solid var(--green)">
+    <div style="font-size:2.5rem;margin-bottom:12px">✅</div>
+    <h3 style="color:var(--green)">Inquiry Sent!</h3>
+    <p class="text-dim" style="margin-top:8px">Thanks {{ inquiry.name }}! We'll get back to you at {{ inquiry.email }} about your {{ inquiry.service|lower }} project.</p>
+    <p style="margin-top:16px"><a href="/lucidstore">Submit another →</a></p>
+  </div>
+  {% else %}
+  <form method="post" class="card" style="padding:32px">
+    <div style="margin-bottom:20px">
+      <label style="display:block;margin-bottom:6px;font-weight:600;font-size:0.9rem">What are you looking for?</label>
+      <select name="service" style="width:100%;padding:10px 14px;background:var(--bg-input);color:var(--text);border:1px solid var(--border);border-radius:var(--radius);font-size:1rem">
+        <option>Signs</option>
+        <option>Stickers & Decals</option>
+        <option>Banners & Displays</option>
+        <option>Vehicle Graphics</option>
+        <option>Window Graphics</option>
+        <option>Vinyl Lettering</option>
+        <option>Other / Multiple</option>
+      </select>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div>
+        <label style="display:block;margin-bottom:6px;font-weight:600;font-size:0.9rem">Your Name</label>
+        <input type="text" name="name" required style="width:100%;padding:10px 14px;background:var(--bg-input);color:var(--text);border:1px solid var(--border);border-radius:var(--radius);font-size:1rem">
+      </div>
+      <div>
+        <label style="display:block;margin-bottom:6px;font-weight:600;font-size:0.9rem">Your Email</label>
+        <input type="email" name="email" required style="width:100%;padding:10px 14px;background:var(--bg-input);color:var(--text);border:1px solid var(--border);border-radius:var(--radius);font-size:1rem">
+      </div>
+    </div>
+    <div style="margin-bottom:24px">
+      <label style="display:block;margin-bottom:6px;font-weight:600;font-size:0.9rem">Project Details</label>
+      <textarea name="message" rows="4" required placeholder="Size, material, quantity, deadline — anything that helps us quote accurately." style="width:100%;padding:10px 14px;background:var(--bg-input);color:var(--text);border:1px solid var(--border);border-radius:var(--radius);font-size:1rem;resize:vertical;font-family:inherit"></textarea>
+    </div>
+    <button type="submit" class="btn-lg" style="width:100%">Send Inquiry →</button>
+  </form>
+  {% endif %}
+</section>
+
+<!-- Footer note -->
+<section style="text-align:center;padding:48px 24px 64px;color:var(--text-dim);font-size:0.9rem;border-top:1px solid var(--border)">
+  <p>LucidStore is a separate service from ToolLab's subscription tools.</p>
+  <p style="margin-top:8px">Questions? <a href="mailto:{{ store_email }}">{{ store_email }}</a></p>
+</section>
+
+{% endblock %}

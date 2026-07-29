@@ -29,6 +29,8 @@ URLS = [
     {"loc": "https://toollab.ca/calc/", "priority": "0.7", "changefreq": "monthly"},
     # Blog
     {"loc": "https://toollab.ca/blog", "priority": "0.9", "changefreq": "weekly"},
+    # LucidStore
+    {"loc": "https://toollab.ca/lucidstore", "priority": "0.8", "changefreq": "monthly"},
 ]
 
 # Add blog articles to sitemap
