@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}QR Code Generator — ToolLab{% endblock %}
+{% block content %}
+<section class="hero" style="padding:40px 0">
+  <h1>📱 QR Code Generator</h1>
+  <p class="hero-sub">Generate a QR code from any text or URL. Free, instant, no signup.</p>
+</section>
+
+<div style="max-width:600px;margin:0 auto">
+  <form action="/qr/generate" method="post" class="card">
+    <label for="text">Text or URL</label>
+    <input type="text" name="text" id="text" placeholder="https://toollab.ca or any text..." required>
+    <label class="mt-16">Size</label>
+    <select name="size" style="max-width:200px">
+      <option value="150">Small (150px)</option>
+      <option value="300" selected>Medium (300px)</option>
+      <option value="500">Large (500px)</option>
+      <option value="800">X-Large (800px)</option>
+    </select>
+    <button type="submit" class="btn-lg mt-24" style="width:100%">Generate QR Code →</button>
+  </form>
+
+  <div class="card mt-24" style="text-align:center;color:var(--text-dim)">
+    <p><strong>💡 Tip:</strong> QR codes are great for sharing URLs, WiFi passwords, contact info, or anything you want people to scan with their phone.</p>
+  </div>
+</div>
+{% endblock %}

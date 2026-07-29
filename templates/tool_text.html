@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Text Tools — ToolLab{% endblock %}
+{% block content %}
+<section class="hero" style="padding:40px 0">
+  <h1>📝 Text Tools</h1>
+  <p class="hero-sub">Word counter, case converter, and markdown preview — all in your browser, nothing leaves the page.</p>
+</section>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('counter')">Word Counter</button>
+  <button class="tab" onclick="showTab('case')">Case Converter</button>
+  <button class="tab" onclick="showTab('markdown')">Markdown Preview</button>
+</div>
+
+<!-- WORD COUNTER -->
+<div id="tab-counter" class="tool-section">
+  <h2>Word Counter</h2>
+  <p class="text-dim mb-16">Paste your text below to count words, characters, sentences, and paragraphs.</p>
+  <textarea id="counter-input" rows="10" placeholder="Paste your text here..." oninput="countWords()"
+            style="width:100%;font-size:1rem;font-family:monospace"></textarea>
+  <div class="grid grid-3 mt-24" id="counter-stats">
+    <div class="card" style="text-align:center"><h3 id="word-count">0</h3><p class="text-dim">Words</p></div>
+    <div class="card" style="text-align:center"><h3 id="char-count">0</h3><p class="text-dim">Characters</p></div>
+    <div class="card" style="text-align:center"><h3 id="sentence-count">0</h3><p class="text-dim">Sentences</p></div>
+    <div class="card" style="text-align:center"><h3 id="para-count">0</h3><p class="text-dim">Paragraphs</p></div>
+    <div class="card" style="text-align:center"><h3 id="line-count">0</h3><p class="text-dim">Lines</p></div>
+    <div class="card" style="text-align:center"><h3 id="read-time">0 min</h3><p class="text-dim">Read time</p></div>
+  </div>
+</div>
+
+<!-- CASE CONVERTER -->
+<div id="tab-case" class="tool-section hidden">
+  <h2>Case Converter</h2>
+  <p class="text-dim mb-16">Convert your text between UPPERCASE, lowercase, Title Case, and more.</p>
+  <textarea id="case-input" rows="8" placeholder="Paste your text here..."
+            style="width:100%;font-size:1rem;font-family:monospace"></textarea>
+  <div class="grid grid-3 mt-16" style="gap:12px">
+    <button class="btn" onclick="convertCase('upper')">UPPERCASE</button>
+    <button class="btn" onclick="convertCase('lower')">lowercase</button>
+    <button class="btn" onclick="convertCase('title')">Title Case</button>
+    <button class="btn" onclick="convertCase('sentence')">Sentence case</button>
+    <button class="btn" onclick="convertCase('alternating')">aLtErNaTiNg</button>
+    <button class="btn" onclick="convertCase('inverse')">iNVERSE cASE</button>
+  </div>
+  <textarea id="case-output" rows="8" placeholder="Result..." readonly
+            style="width:100%;font-size:1rem;font-family:monospace;margin-top:16px"></textarea>
+</div>
+
+<!-- MARKDOWN PREVIEW -->
+<div id="tab-markdown" class="tool-section hidden">
+  <h2>Markdown Preview</h2>
+  <p class="text-dim mb-16">Write Markdown on the left, see it rendered on the right. Great for READMEs and docs.</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+    <textarea id="md-input" rows="20" placeholder="# Heading&#10;&#10;**bold** *italic*&#10;&#10;- list item&#10;- another&#10;&#10;[link](https://toollab.ca)"
+              style="width:100%;font-size:0.9rem;font-family:monospace;height:400px"
+              oninput="previewMarkdown()"></textarea>
+    <div id="md-preview" class="card" style="overflow-y:auto;height:400px;line-height:1.7">
+      <p class="text-dim">Start typing to see a preview...</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tool-section').forEach(s => s.classList.add('hidden'));
+  document.getElementById('tab-' + name).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+
+// Word counter
+function countWords() {
+  const text = document.getElementById('counter-input').value;
+  document.getElementById('word-count').textContent = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById('char-count').textContent = text.length;
+  document.getElementById('sentence-count').textContent = (text.match(/[.!?]+/g) || []).length;
+  document.getElementById('para-count').textContent = text.trim() ? text.split(/\n\n+/).filter(p => p.trim()).length : 0;
+  document.getElementById('line-count').textContent = text.trim() ? text.split('\n').filter(l => l.trim()).length : 0;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  document.getElementById('read-time').textContent = Math.max(1, Math.ceil(words / 200)) + ' min';
+}
+
+// Case converter
+function convertCase(type) {
+  const input = document.getElementById('case-input').value;
+  let result = input;
+  switch(type) {
+    case 'upper': result = input.toUpperCase(); break;
+    case 'lower': result = input.toLowerCase(); break;
+    case 'title': result = input.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase()); break;
+    case 'sentence': result = input.toLowerCase().replace(/(^\s*\w|[.!?]\s+\w)/g, c => c.toUpperCase()); break;
+    case 'alternating': result = [...input].map((c,i) => i % 2 ? c.toLowerCase() : c.toUpperCase()).join(''); break;
+    case 'inverse': result = [...input].map(c => c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()).join(''); break;
+  }
+  document.getElementById('case-output').value = result;
+}
+
+// Markdown preview (simple renderer — just enough to be useful)
+function previewMarkdown() {
+  let md = document.getElementById('md-input').value;
+  let html = md
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    // Headers
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    // Bold + italic
+    .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    // Links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+    // Code
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    // Lists
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, '<ul>$&</ul>')
+    // Paragraphs
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+  html = '<p>' + html + '</p>';
+  document.getElementById('md-preview').innerHTML = html;
+}
+</script>
+{% endblock %}
