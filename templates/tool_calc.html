@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% block title %}Calculators — ToolLab{% endblock %}
+{% block content %}
+<section class="hero" style="padding:40px 0">
+  <h1>🧮 Calculators</h1>
+  <p class="hero-sub">Percentage, unit conversion, date math, and revenue — all free, all in your browser.</p>
+</section>
+
+<div class="tabs" style="flex-wrap:wrap">
+  <button class="tab active" onclick="showTab('percent')">% Percentage</button>
+  <button class="tab" onclick="showTab('unit')">📐 Unit Converter</button>
+  <button class="tab" onclick="showTab('date')">📅 Date Calc</button>
+  <button class="tab" onclick="showTab('revenue')">💰 Revenue</button>
+</div>
+
+<!-- PERCENTAGE CALC -->
+<div id="tab-percent" class="tool-section">
+  <h2>Percentage Calculator</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Tip Calculator</h3>
+      <label class="mt-8">Bill amount ($)</label>
+      <input type="number" id="bill-amount" placeholder="50.00" step="0.01" oninput="calcTip()">
+      <label class="mt-8">Tip %</label>
+      <select id="tip-pct" onchange="calcTip()">
+        <option value="10">10%</option><option value="15" selected>15%</option>
+        <option value="18">18%</option><option value="20">20%</option>
+        <option value="25">25%</option>
+      </select>
+      <div class="result-area mt-16" id="tip-result" style="text-align:center;font-size:1.5rem"></div>
+    </div>
+    <div class="card">
+      <h3>Discount / Sale Price</h3>
+      <label class="mt-8">Original price ($)</label>
+      <input type="number" id="orig-price" placeholder="100.00" step="0.01" oninput="calcDiscount()">
+      <label class="mt-8">Discount %</label>
+      <input type="number" id="discount-pct" value="20" min="0" max="100" oninput="calcDiscount()">
+      <div class="result-area mt-16" id="discount-result" style="text-align:center;font-size:1.5rem"></div>
+    </div>
+    <div class="card">
+      <h3>% Change</h3>
+      <label class="mt-8">Old value</label>
+      <input type="number" id="old-val" placeholder="50" step="0.01" oninput="calcChange()">
+      <label class="mt-8">New value</label>
+      <input type="number" id="new-val" placeholder="75" step="0.01" oninput="calcChange()">
+      <div class="result-area mt-16" id="change-result" style="text-align:center;font-size:1.5rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- UNIT CONVERTER -->
+<div id="tab-unit" class="tool-section hidden">
+  <h2>Unit Converter</h2>
+  <div class="card" style="max-width:600px;margin:0 auto">
+    <label>Convert</label>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="number" id="unit-input" value="1" step="any" oninput="convertUnit()" style="flex:1">
+      <select id="unit-type" onchange="convertUnit()" style="max-width:200px">
+        <option value="length">Length</option>
+        <option value="weight">Weight</option>
+        <option value="temp">Temperature</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+      <select id="unit-from" onchange="convertUnit()" style="flex:1"></select>
+      <span style="font-size:1.5rem">→</span>
+      <select id="unit-to" onchange="convertUnit()" style="flex:1"></select>
+    </div>
+    <div class="result-area mt-16" id="unit-result" style="text-align:center;font-size:1.5rem"></div>
+  </div>
+</div>
+
+<!-- DATE CALC -->
+<div id="tab-date" class="tool-section hidden">
+  <h2>Date Calculator</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Days Between Dates</h3>
+      <label class="mt-8">Start date</label>
+      <input type="date" id="date-start" onchange="calcDateDiff()">
+      <label class="mt-8">End date</label>
+      <input type="date" id="date-end" onchange="calcDateDiff()">
+      <div class="result-area mt-16" id="date-diff-result" style="text-align:center;font-size:1.5rem"></div>
+    </div>
+    <div class="card">
+      <h3>Add / Subtract Days</h3>
+      <label class="mt-8">Start date</label>
+      <input type="date" id="date-base" onchange="calcDateAdd()">
+      <label class="mt-8">Days (+ to add, − to subtract)</label>
+      <input type="number" id="date-days" value="30" oninput="calcDateAdd()">
+      <div class="result-area mt-16" id="date-add-result" style="text-align:center;font-size:1.5rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- REVENUE CALC -->
+<div id="tab-revenue" class="tool-section hidden">
+  <h2>Revenue Calculator</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>Product Revenue</h3>
+      <label class="mt-8">Price per unit ($)</label>
+      <input type="number" id="rev-price" placeholder="29.00" step="0.01" oninput="calcRevenue()">
+      <label class="mt-8">Units sold</label>
+      <input type="number" id="rev-units" placeholder="100" oninput="calcRevenue()">
+      <label class="mt-8">Refund rate %</label>
+      <input type="number" id="rev-refund" value="3" min="0" max="100" oninput="calcRevenue()">
+      <div class="result-area mt-16" id="rev-result" style="text-align:center;font-size:1.5rem"></div>
+    </div>
+    <div class="card">
+      <h3>MRR Calculator</h3>
+      <label class="mt-8">Monthly price ($)</label>
+      <input type="number" id="mrr-price" placeholder="5.00" step="0.01" oninput="calcMRR()">
+      <label class="mt-8">Subscribers</label>
+      <input type="number" id="mrr-subs" placeholder="50" oninput="calcMRR()">
+      <label class="mt-8">Monthly churn %</label>
+      <input type="number" id="mrr-churn" value="5" min="0" max="100" oninput="calcMRR()">
+      <div class="result-area mt-16" id="mrr-result" style="text-align:center;font-size:1.5rem"></div>
+    </div>
+    <div class="card">
+      <h3>Yearly from Monthly</h3>
+      <label class="mt-8">Monthly revenue ($)</label>
+      <input type="number" id="yr-monthly" placeholder="1000" step="0.01" oninput="calcYearly()">
+      <label class="mt-8">Monthly growth %</label>
+      <input type="number" id="yr-growth" value="5" min="0" oninput="calcYearly()">
+      <div class="result-area mt-16" id="yr-result" style="text-align:center;font-size:1.5rem"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tool-section').forEach(s => s.classList.add('hidden'));
+  document.getElementById('tab-' + name).classList.remove('hidden');
+  event.target.classList.add('active');
+}
+
+// Percentage
+function calcTip() {
+  const bill = parseFloat(document.getElementById('bill-amount').value) || 0;
+  const pct = parseInt(document.getElementById('tip-pct').value);
+  const tip = bill * pct / 100;
+  document.getElementById('tip-result').innerHTML =
+    'Tip: <strong>$' + tip.toFixed(2) + '</strong><br>Total: <strong>$' + (bill + tip).toFixed(2) + '</strong>';
+}
+function calcDiscount() {
+  const price = parseFloat(document.getElementById('orig-price').value) || 0;
+  const pct = parseFloat(document.getElementById('discount-pct').value) || 0;
+  const discount = price * pct / 100;
+  document.getElementById('discount-result').innerHTML =
+    'You save: <strong>$' + discount.toFixed(2) + '</strong><br>Sale price: <strong>$' + (price - discount).toFixed(2) + '</strong>';
+}
+function calcChange() {
+  const old = parseFloat(document.getElementById('old-val').value);
+  const nw = parseFloat(document.getElementById('new-val').value);
+  if (isNaN(old) || isNaN(nw) || old === 0) return;
+  const pct = ((nw - old) / Math.abs(old)) * 100;
+  const sign = pct >= 0 ? '+' : '';
+  document.getElementById('change-result').innerHTML = 'Change: <strong>' + sign + pct.toFixed(1) + '%</strong>';
+}
+
+// Unit converter
+const units = {
+  length: { m: 1, km: 1000, cm: 0.01, mm: 0.001, in: 0.0254, ft: 0.3048, yd: 0.9144, mi: 1609.344 },
+  weight: { g: 1, kg: 1000, mg: 0.001, lb: 453.592, oz: 28.3495 },
+  temp: null
+};
+function populateUnits() {
+  const type = document.getElementById('unit-type').value;
+  const from = document.getElementById('unit-from');
+  const to = document.getElementById('unit-to');
+  from.innerHTML = to.innerHTML = '';
+  const keys = type === 'temp' ? ['C', 'F', 'K'] : Object.keys(units[type]);
+  keys.forEach(k => { from.add(new Option(k, k)); to.add(new Option(k, keys[1] || k)); });
+  convertUnit();
+}
+function convertUnit() {
+  const type = document.getElementById('unit-type').value;
+  const val = parseFloat(document.getElementById('unit-input').value) || 0;
+  const from = document.getElementById('unit-from').value;
+  const to = document.getElementById('unit-to').value;
+  let result;
+  if (type === 'temp') {
+    const c = from === 'C' ? val : from === 'F' ? (val - 32) * 5/9 : val - 273.15;
+    result = to === 'C' ? c : to === 'F' ? c * 9/5 + 32 : c + 273.15;
+  } else {
+    result = val * units[type][from] / units[type][to];
+  }
+  document.getElementById('unit-result').innerHTML =
+    '<strong>' + val + ' ' + from + '</strong> = <strong>' + parseFloat(result.toPrecision(6)) + ' ' + to + '</strong>';
+}
+populateUnits();
+
+// Date
+function calcDateDiff() {
+  const s = document.getElementById('date-start').value;
+  const e = document.getElementById('date-end').value;
+  if (!s || !e) return;
+  const days = Math.round((new Date(e) - new Date(s)) / 86400000);
+  document.getElementById('date-diff-result').innerHTML = '<strong>' + Math.abs(days) + ' days</strong>';
+}
+function calcDateAdd() {
+  const base = document.getElementById('date-base').value;
+  const days = parseInt(document.getElementById('date-days').value) || 0;
+  if (!base) return;
+  const d = new Date(base); d.setDate(d.getDate() + days);
+  document.getElementById('date-add-result').innerHTML = '<strong>' + d.toLocaleDateString('en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'}) + '</strong>';
+}
+
+// Revenue
+function calcRevenue() {
+  const price = parseFloat(document.getElementById('rev-price').value) || 0;
+  const units = parseInt(document.getElementById('rev-units').value) || 0;
+  const refund = parseFloat(document.getElementById('rev-refund').value) || 0;
+  const gross = price * units;
+  const net = gross * (1 - refund / 100);
+  document.getElementById('rev-result').innerHTML =
+    'Gross: <strong>$' + gross.toFixed(2) + '</strong><br>Net (after refunds): <strong>$' + net.toFixed(2) + '</strong>';
+}
+function calcMRR() {
+  const price = parseFloat(document.getElementById('mrr-price').value) || 0;
+  const subs = parseInt(document.getElementById('mrr-subs').value) || 0;
+  const churn = parseFloat(document.getElementById('mrr-churn').value) || 0;
+  const mrr = price * subs;
+  const netMRR = mrr * (1 - churn / 100);
+  document.getElementById('mrr-result').innerHTML =
+    'MRR: <strong>$' + mrr.toFixed(2) + '/mo</strong><br>Net MRR (after churn): <strong>$' + netMRR.toFixed(2) + '/mo</strong>';
+}
+function calcYearly() {
+  const monthly = parseFloat(document.getElementById('yr-monthly').value) || 0;
+  const growth = parseFloat(document.getElementById('yr-growth').value) || 0;
+  let total = 0, m = monthly;
+  for (let i = 0; i < 12; i++) { total += m; m *= (1 + growth / 100); }
+  document.getElementById('yr-result').innerHTML =
+    'Yearly total: <strong>$' + total.toFixed(2) + '</strong><br>Month 12: <strong>$' + m.toFixed(2) + '/mo</strong>';
+}
+</script>
+{% endblock %}
